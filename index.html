@@ -1,0 +1,583 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chilli Hub V8</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --red: #ff382b;
+  --red-light: #ff8068;
+  --dark: #080809;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  overflow-x: hidden;
+  display: grid;
+  place-items: center;
+  padding: 25px 15px;
+  color: white;
+  font-family: Inter, sans-serif;
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(125,25,20,.22), transparent 55%),
+    radial-gradient(ellipse at 10% 90%, rgba(80,15,15,.13), transparent 45%),
+    #080809;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: .2;
+  background-image:
+    linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+  background-size: 45px 45px;
+}
+
+.ambient {
+  position: fixed;
+  width: 380px;
+  height: 380px;
+  border-radius: 50%;
+  background: rgba(255,38,20,.12);
+  filter: blur(100px);
+  pointer-events: none;
+  animation: ambientMove 9s ease-in-out infinite alternate;
+}
+
+.ambient.one { top: -180px; left: -140px; }
+.ambient.two {
+  bottom: -200px;
+  right: -140px;
+  animation-delay: -4s;
+}
+
+@keyframes ambientMove {
+  from { transform: translate(0,0) scale(.8); }
+  to { transform: translate(80px,60px) scale(1.2); }
+}
+
+/* PARTICLES */
+.particles {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.particle {
+  position: absolute;
+  bottom: -20px;
+  border-radius: 50%;
+  background: #ff6748;
+  box-shadow: 0 0 10px 2px rgba(255,65,35,.6);
+  animation: rise linear infinite;
+}
+
+@keyframes rise {
+  0% {
+    transform: translateY(0) translateX(0) scale(.5);
+    opacity: 0;
+  }
+  15% { opacity: .9; }
+  85% { opacity: .6; }
+  100% {
+    transform: translateY(-110vh) translateX(55px) scale(1.5);
+    opacity: 0;
+  }
+}
+
+/* MAIN CARD */
+.wrapper {
+  width: 100%;
+  max-width: 420px;
+  position: relative;
+  z-index: 2;
+  animation: enter .8s cubic-bezier(.2,.8,.2,1) both;
+}
+
+@keyframes enter {
+  from { opacity: 0; transform: translateY(28px) scale(.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.card {
+  position: relative;
+  overflow: hidden;
+  padding: 36px 27px 28px;
+  border-radius: 25px;
+  background: linear-gradient(145deg, rgba(27,24,25,.96), rgba(12,12,14,.96));
+  border: 1px solid rgba(255,76,55,.28);
+  box-shadow:
+    0 25px 90px rgba(0,0,0,.65),
+    0 0 45px rgba(255,40,25,.09),
+    inset 0 1px rgba(255,255,255,.06);
+}
+
+.card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 15%;
+  width: 70%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #ff513d, transparent);
+  box-shadow: 0 0 18px #ff382b;
+}
+
+.card::after {
+  content: "";
+  position: absolute;
+  width: 230px;
+  height: 230px;
+  right: -150px;
+  top: -150px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,72,50,.15);
+  box-shadow:
+    0 0 0 20px rgba(255,72,50,.025),
+    0 0 0 40px rgba(255,72,50,.02);
+  pointer-events: none;
+}
+
+.top-label {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  color: #aaa2a3;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+
+.status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #ff4939;
+  box-shadow: 0 0 10px #ff4939;
+  animation: blink 1.5s infinite;
+}
+
+@keyframes blink {
+  50% { opacity: .3; box-shadow: 0 0 2px #ff4939; }
+}
+
+/* CHILLI LOGO - NO FLAME */
+.logo-area {
+  width: 142px;
+  height: 142px;
+  margin: 20px auto 17px;
+  position: relative;
+  display: grid;
+  place-items: center;
+  isolation: isolate;
+  animation: logoFloat 3.5s ease-in-out infinite;
+}
+
+.logo-halo {
+  position: absolute;
+  inset: 5px;
+  border-radius: 43px;
+  background: radial-gradient(circle, rgba(255,54,30,.3), transparent 70%);
+  filter: blur(13px);
+  animation: haloPulse 2.5s ease-in-out infinite;
+}
+
+.logo-back {
+  position: absolute;
+  inset: 15px;
+  border-radius: 36px;
+  background: linear-gradient(145deg, #3a1715, #130d0e 65%);
+  border: 1px solid rgba(255,100,75,.55);
+  box-shadow:
+    inset 0 0 25px rgba(255,50,25,.2),
+    0 12px 35px rgba(0,0,0,.5);
+  transform: rotate(-8deg);
+}
+
+.logo-back::before {
+  content: "";
+  position: absolute;
+  inset: 7px;
+  border: 1px solid rgba(255,140,100,.2);
+  border-radius: 28px;
+}
+
+/* MAIN PEPPER */
+.logo-pepper {
+  position: relative;
+  z-index: 3;
+  font-size: 82px;
+  line-height: 1;
+  filter:
+    drop-shadow(0 7px 4px rgba(0,0,0,.65))
+    drop-shadow(0 0 14px rgba(255,55,25,.75));
+  animation: pepperMove 3s ease-in-out infinite;
+  user-select: none;
+}
+
+.logo-glint {
+  position: absolute;
+  z-index: 4;
+  color: #ffd1b8;
+  font-size: 17px;
+  text-shadow: 0 0 12px #ff452b;
+  animation: glint 2s ease-in-out infinite;
+}
+
+.glint-a { top: 22px; right: 13px; }
+.glint-b { bottom: 22px; left: 13px; animation-delay: .7s; }
+.glint-c { top: 66px; right: 0; font-size: 12px; animation-delay: 1.2s; }
+
+.logo-orbit {
+  position: absolute;
+  inset: 0;
+  border: 1px dashed rgba(255,90,60,.38);
+  border-radius: 43px;
+  transform: rotate(28deg);
+  animation: orbit 16s linear infinite;
+}
+
+@keyframes logoFloat {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-7px); }
+}
+
+@keyframes haloPulse {
+  0%,100% { opacity: .55; transform: scale(.92); }
+  50% { opacity: 1; transform: scale(1.1); }
+}
+
+@keyframes pepperMove {
+  0%,100% { transform: rotate(-7deg) scale(1); }
+  50% { transform: rotate(6deg) scale(1.07); }
+}
+
+@keyframes glint {
+  0%,100% { opacity: .2; transform: scale(.7); }
+  50% { opacity: 1; transform: scale(1.3); }
+}
+
+@keyframes orbit {
+  to { transform: rotate(388deg); }
+}
+
+/* TITLE */
+h1 {
+  margin: 0;
+  text-align: center;
+  font-family: Orbitron, sans-serif;
+  font-size: clamp(25px,7vw,32px);
+  font-weight: 900;
+  letter-spacing: 1px;
+  background: linear-gradient(100deg,#fff 5%,#ffb3a0 35%,#ff4938 65%,#fff 95%);
+  background-size: 220% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: titleShine 5s linear infinite;
+  filter: drop-shadow(0 0 15px rgba(255,55,35,.2));
+}
+
+@keyframes titleShine {
+  to { background-position: 220% center; }
+}
+
+.subtitle {
+  margin: 11px 0 25px;
+  color: #999194;
+  text-align: center;
+  font-size: 12px;
+  letter-spacing: 1.1px;
+}
+
+.separator {
+  height: 1px;
+  margin: 0 0 22px;
+  background: linear-gradient(90deg,transparent,rgba(255,85,65,.4),transparent);
+}
+
+/* KEY AREA */
+.key-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.3px;
+  color: #d7cdce;
+  text-transform: uppercase;
+}
+
+.key-heading span:last-child {
+  color: #ff715d;
+  font-size: 9px;
+  letter-spacing: 1px;
+}
+
+.key-box {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 14px 13px;
+  border-radius: 12px;
+  background: rgba(0,0,0,.38);
+  border: 1px solid rgba(255,255,255,.09);
+  transition: border-color .25s, box-shadow .25s;
+}
+
+.key-box:focus-within {
+  border-color: rgba(255,75,55,.7);
+  box-shadow: 0 0 20px rgba(255,50,30,.1);
+}
+
+.key-icon {
+  color: #ff6955;
+  font-size: 17px;
+}
+
+#keyText {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  color: #eee4e4;
+  font-family: monospace;
+  font-size: 11px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  user-select: all;
+}
+
+/* COPY BUTTON */
+.copy-btn {
+  width: 100%;
+  margin-top: 15px;
+  padding: 15px;
+  border: 1px solid rgba(255,120,90,.55);
+  border-radius: 12px;
+  color: white;
+  font-family: Inter, sans-serif;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  cursor: pointer;
+  background: linear-gradient(105deg,#a91f1a,#f04430 50%,#9f201b);
+  background-size: 200% 100%;
+  box-shadow:
+    0 7px 25px rgba(210,40,25,.22),
+    inset 0 1px rgba(255,255,255,.2);
+  transition: transform .25s, box-shadow .25s, background-position .5s;
+  position: relative;
+  overflow: hidden;
+}
+
+.copy-btn::before {
+  content: "";
+  position: absolute;
+  top: -60%;
+  left: -35%;
+  width: 25%;
+  height: 220%;
+  transform: rotate(25deg);
+  background: rgba(255,255,255,.23);
+  transition: left .65s;
+}
+
+.copy-btn:hover::before { left: 120%; }
+
+.copy-btn:hover {
+  transform: translateY(-3px);
+  background-position: 100% 0;
+  box-shadow: 0 12px 32px rgba(230,45,30,.35);
+}
+
+.copy-btn:active { transform: scale(.98); }
+
+.copy-btn.success {
+  background: linear-gradient(100deg,#176b3d,#25995a);
+  border-color: #4bd48a;
+}
+
+.note {
+  min-height: 18px;
+  margin-top: 12px;
+  color: #8d8588;
+  font-size: 10px;
+  text-align: center;
+  transition: color .2s;
+}
+
+.footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 7px;
+  margin-top: 24px;
+  color: #716a6d;
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.footer-line {
+  width: 22px;
+  height: 1px;
+  background: #74332c;
+}
+
+@media (max-width:420px) {
+  .card { padding: 30px 20px 24px; }
+  .logo-area { transform: scale(.94); margin-top: 14px; }
+  h1 { font-size: 26px; }
+}
+
+@media (prefers-reduced-motion:reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+}
+</style>
+</head>
+
+<body>
+<div class="ambient one"></div>
+<div class="ambient two"></div>
+<div class="particles" id="particles"></div>
+
+<main class="wrapper">
+  <section class="card">
+
+    <div class="top-label">
+      <span class="status-dot"></span>
+      PREMIUM KEY SYSTEM
+    </div>
+
+    <!-- LOGO QUẢ ỚT - ĐÃ XÓA NGỌN LỬA -->
+    <div class="logo-area">
+      <div class="logo-halo"></div>
+      <div class="logo-back"></div>
+      <div class="logo-orbit"></div>
+
+      <div class="logo-pepper">🌶️</div>
+
+      <div class="logo-glint glint-a">✦</div>
+      <div class="logo-glint glint-b">✧</div>
+      <div class="logo-glint glint-c">✦</div>
+    </div>
+
+    <h1>CHILLI HUB V8</h1>
+    <p class="subtitle">Powerful Features · Smooth Experience</p>
+
+    <div class="separator"></div>
+
+    <div class="key-heading">
+      <span>Your Access Key</span>
+      <span>● ACTIVE</span>
+    </div>
+
+    <div class="key-box">
+      <span class="key-icon">♧</span>
+      <div id="keyText">ChilliHubV8KeyKakwo - LapqlekieiahOaowihe</div>
+    </div>
+
+    <button class="copy-btn" id="copyBtn" type="button">
+      <span id="buttonText">✦ &nbsp; COPY KEY</span>
+    </button>
+
+    <div class="note" id="message">
+      Press the button to copy your access key.
+    </div>
+
+    <div class="footer">
+      <span class="footer-line"></span>
+      CHILLI HUB V8
+      <span class="footer-line"></span>
+    </div>
+
+  </section>
+</main>
+
+<script>
+const key = "ChilliHubV8KeyKakwo - LapqlekieiahOaowihe";
+
+const button = document.getElementById("copyBtn");
+const buttonText = document.getElementById("buttonText");
+const message = document.getElementById("message");
+
+button.addEventListener("click", async () => {
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(key);
+    } else {
+      const temp = document.createElement("textarea");
+      temp.value = key;
+      temp.style.position = "fixed";
+      temp.style.opacity = "0";
+      document.body.appendChild(temp);
+      temp.select();
+
+      const copied = document.execCommand("copy");
+      temp.remove();
+
+      if (!copied) throw new Error("Copy failed");
+    }
+
+    button.classList.add("success");
+    buttonText.textContent = "✓  COPIED SUCCESSFULLY";
+    message.textContent = "Your key has been copied!";
+    message.style.color = "#62d995";
+
+    setTimeout(() => {
+      button.classList.remove("success");
+      buttonText.textContent = "✦  COPY KEY";
+      message.textContent = "Press the button to copy your access key.";
+      message.style.color = "";
+    }, 2200);
+
+  } catch (error) {
+    message.textContent = "Unable to copy. Please select the key manually.";
+    message.style.color = "#ff806e";
+  }
+});
+
+/* FLOATING RED PARTICLES */
+const particleArea = document.getElementById("particles");
+
+for (let i = 0; i < 34; i++) {
+  const particle = document.createElement("span");
+  particle.className = "particle";
+
+  particle.style.left = Math.random() * 100 + "%";
+  particle.style.animationDuration = (7 + Math.random() * 10) + "s";
+  particle.style.animationDelay = (-Math.random() * 15) + "s";
+  particle.style.opacity = Math.random() * .8 + .2;
+
+  const size = 2 + Math.random() * 3;
+  particle.style.width = size + "px";
+  particle.style.height = size + "px";
+
+  particleArea.appendChild(particle);
+}
+</script>
+
+</body>
+</html>
